@@ -1,5 +1,5 @@
 streamlit
-bokeh
+bokeh==2.3.4
 pandas
 numpy
 scipy
