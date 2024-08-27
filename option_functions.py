@@ -168,7 +168,7 @@ def BSPut_vega(spot, time, strike, expiry, vol, rate):
     d1 = (log(spot/strike) + (rate + vol**2/2)*(expiry - time)) / vol / sqrt(expiry - time)
     return spot*sqrt(expiry - time)*norm.pdf(d1) / 100
 
-
+# we divide vega by 100 because in our model, the input volatility (vol) is expressed as a percentage (e.g., 20%) rather than a decimal (e.g., 0.20). Additionally, the result is divided by 100 to scale Vega appropriately, as Vega is typically expressed per 1% change in volatility.
 
 
 def BSCall_theta(spot, time, strike, expiry, vol, rate): 
@@ -195,49 +195,22 @@ class option:
         self.strike = strike
         self.expiry = expiry
         self.type = type
-        
-    def get_strike(self): 
-        return self.strike 
-    
-    def get_expiry(self): 
-        return self.expiry 
-    
-    def get_type(self): 
-        return self.type 
-    
-    def set_strike(self, strike=None): 
-        
-        if strike is None:
-            print("Must provide a strike")
-            return None
-        
-        self.strike = strike
-    
-    def set_expiry(self, expiry=None): 
-        
-        if expiry is None: 
-            print("Must provide a expiry")
-            return None 
-        
-        self.expiry = expiry 
-        
+                
     def price(self, spot, time, vol, rate): 
         
-        if time>self.expiry:
-            print("Time must precede the expiration date")
-            return None 
+        if time>=self.expiry:
+            return "ERROR! Time must precede the expiration date"
         
         if self.type == "call": 
-            return BSCall(spot, time, self.strike, self.expiry, vol, rate)
+            return round(BSCall(spot, time, self.strike, self.expiry, vol, rate),2)
         else: 
-            return BSPut(spot, time, self.strike, self.expiry, vol, rate)         
+            return round(BSPut(spot, time, self.strike, self.expiry, vol, rate),2)         
         
                   
     def delta(self, spot, time, vol, rate): 
         
-        if time>self.expiry:
-            print("Time must precede the expiration date")
-            return None 
+        if time>=self.expiry:
+            return "ERROR! Time must precede the expiration date" 
         
         if self.type == "call": 
             return BSCall_delta(spot, time, self.strike, self.expiry, vol, rate)
@@ -246,9 +219,8 @@ class option:
                   
     def gamma(self, spot, time, vol, rate): 
         
-        if time>self.expiry:
-            print("Time must precede the expiration date")
-            return None 
+        if time>=self.expiry:
+            return "ERROR! Time must precede the expiration date" 
         
         if self.type == "call": 
             return BSCall_gamma(spot, time, self.strike, self.expiry, vol, rate)
@@ -257,9 +229,8 @@ class option:
                   
     def vega(self, spot, time, vol, rate): 
         
-        if time>self.expiry:
-            print("Time must precede the expiration date")
-            return None 
+        if time>=self.expiry:
+            return "ERROR! Time must precede the expiration date"
         
         if self.type == "call": 
             return BSCall_vega(spot, time, self.strike, self.expiry, vol, rate)
@@ -268,16 +239,19 @@ class option:
                   
     def theta(self, spot, time, vol, rate): 
         
-        if time>self.expiry:
-            print("Time must precede the expiration date")
-            return None 
+        if time>=self.expiry:
+            return "ERROR! Time must precede the expiration date" 
         
         if self.type == "call": 
             return BSCall_theta(spot, time, self.strike, self.expiry, vol, rate)
         else: 
             return BSPut_theta(spot, time, self.strike, self.expiry, vol, rate) 
         
-    def delta_hedging(self, spot, time, vol, rate, num_options, current_position):
+    def delta_hedging(self, spot, time, vol, rate, num_options):
+        
+        if time>=self.expiry:
+            return "ERROR! Time must precede the expiration date"
+
         if self.type == "call":
             delta = BSCall_delta(spot, time, self.strike, self.expiry, vol, rate)
             action = "short"  # For call options, we need to short the stock
@@ -285,47 +259,52 @@ class option:
             delta = BSPut_delta(spot, time, self.strike, self.expiry, vol, rate)
             action = "long"  # For put options, we need to long the stock
         
-        hedge_position = ceil(abs(num_options * delta - current_position)) # math.ceil() rounds up to the nearest integer
+        hedge_position = ceil(abs(num_options * delta)) # math.ceil() rounds up to the nearest integer
         
         if action == "short":
-            action_message = f"Take a Short position in {hedge_position} shares"
+            action_message = f"Take a short position in {hedge_position} shares"
         else:
-            action_message = f"Take a Long position in {hedge_position} shares"
+            action_message = f"Take a long position in {hedge_position} shares"
             
-        return hedge_position, action_message   
+        return action_message   
     """
     Delta Hedging Calculation: This function will calculate the number of shares to short or long to achieve a 
     delta-neutral portfolio based on the parameters provided.
-    For call options, the delta ranges between 0 and 1, while on put options, it ranges between -1 and 0. So the hedge 
-    position will give 
+    Note that for call options, the delta ranges between 0 and 1, while on put options, it ranges between -1 and 0. This is why in
+    order to give a positive amount of shares to buy or to short I took the absolute value of the hedge position. 
     """
-    def calculate_pnl(self, initial_spot, final_spot, initial_time, final_time,
-                      initial_vol, final_vol, rate, num_options):
-                
+    def calculate_pnl(self, spot, time, vol, rate, num_options, current_spot, current_time, current_vol):
+                #current time represents the new time after which you want to evaluate your position
+        if time>=self.expiry:
+            return "ERROR! Time must precede the expiration date"
+            
+        if current_time>=self.expiry:
+            return "ERROR! The new time selected must precede the expiration date"
+            
         if self.type == "call":
-            initial_option_value = BSCall(initial_spot, initial_time, self.strike, self.expiry, initial_vol, rate)           
-            initial_delta = BSCall_delta(initial_spot, initial_time, self.strike, self.expiry, initial_vol, rate)
+            initial_option_value = BSCall(spot, time, self.strike, self.expiry, vol, rate)           
+            initial_delta = BSCall_delta(spot, time, self.strike, self.expiry, vol, rate)
         else:
-            initial_option_value = BSPut(initial_spot, initial_time, self.strike, self.expiry, initial_vol, rate)
-            initial_delta = BSPut_delta(initial_spot, initial_time, self.strike, self.expiry, initial_vol, rate)
+            initial_option_value = BSPut(spot, time, self.strike, self.expiry, vol, rate)
+            initial_delta = BSPut_delta(spot, time, self.strike, self.expiry, vol, rate)
 
         if self.type == "call":
-            final_option_value = BSCall(final_spot, final_time, self.strike, self.expiry, final_vol, rate)
+            final_option_value = BSCall(current_spot, current_time, self.strike, self.expiry, current_vol, rate)
         else:
-            final_option_value = BSPut(final_spot, final_time, self.strike, self.expiry, final_vol, rate)
+            final_option_value = BSPut(current_spot, current_time, self.strike, self.expiry, current_vol, rate)
 
         
         option_pnl = num_options * (final_option_value - initial_option_value)
 
         
-        hedge_pnl = num_positions * initial_delta * (final_spot - initial_spot)
+        hedge_pnl = ceil(num_options * initial_delta) * (current_spot - spot)
 
         
         total_pnl = option_pnl - hedge_pnl
 
-        return total_pnl, option_pnl, hedge_pnl
-    
-    
+        return total_pnl, option_pnl, -hedge_pnl
+
+  
     def plot_payoff(self, ax=None, color = "Purple"):
                          
         if not HASMATPLOTLIB:
@@ -396,9 +375,8 @@ class option:
             print("Plotting require matplotlib") 
             return None 
                 
-        if time > self.expiry:
-            print("Time must precede the expiration date")
-            return None
+        if time >= self.expiry:
+            return "ERROR! Time must precede the expiration date"
         
         if ax is None:          
             fig, ax = plt.subplots() 

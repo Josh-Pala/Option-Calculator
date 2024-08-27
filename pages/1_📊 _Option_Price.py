@@ -13,11 +13,11 @@ st.set_page_config(
 )
 
 
-# Titolo dell'app
+
 st.title("Black-Scholes Pricing Model")
 
 
-# Layout a colonne per i parametri dell'opzione
+
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
@@ -29,7 +29,7 @@ with col3:
 with col4:
     expiry = st.number_input("Expiry (in years)",format="%.3f", value=1.000, step=0.001)
 
-# Seconda riga di colonne
+
 col5, col6, col7, col8 = st.columns(4)
 
 with col5:
@@ -89,7 +89,7 @@ with col2:
         vega = option.vega(spot, time, vol, rate)
         theta = option.theta(spot, time, vol, rate)
 
-        # Creazione del DataFrame per i risultati
+        
         results_data = {
             "Delta": [delta],
             "Gamma": [gamma],
@@ -170,7 +170,9 @@ with col2:
                     the underlying asset's price.
                 
                 3. Theta (Θ): Measures the rate of change in the option price with respect to
-                    the passage of time, also known as time decay.
+                    the passage of time, also known as time decay. In our model, Theta is divided
+                    by 365 to convert the annualized Theta into a daily rate, reflecting how much the
+                    option's price is expected to decay each day.
                 
                 4. Vega (ν): Measures the rate of change in the option price with respect to
                     the change in the underlying asset's volatility.
@@ -215,7 +217,7 @@ plot.add_layout(strike_line)
 plot.add_layout(spot_line)
 
 
-# Add labels that will be shown on hover
+
 
 hover_tool = HoverTool(
     tooltips=[("Price Level", "@y{0.00}"), ("Spot Price", "@x{0.00}")],
@@ -230,9 +232,9 @@ plot.yaxis.axis_label = "Value ($)"
 
 plot.margin = (20, 20, 20, 20) #top, right, bottom, left
 
-# Layout Bokeh elements
+
 layout = column(plot)
-# Display the plot in Streamlit
+
 st.bokeh_chart(layout, use_container_width=True)
 
 @st.cache_data
@@ -262,17 +264,24 @@ line_gammas = plot.line('x', 'y', source=source_gammas, color="green", legend_la
 line_vegas = plot.line('x', 'y', source=source_vegas, color="orange", legend_label="Vega", line_width=2)
 line_thetas = plot.line('x', 'y', source=source_thetas, color="red", legend_label="Theta", line_width=2)
 
-# Add vertical dashed lines for strike and spot price
+
 strike_line = Span(location=strike, dimension='height', line_color='green', line_dash='dotted', line_width=2)
 spot_line = Span(location=spot, dimension='height', line_color='orange', line_dash='dotted', line_width=2)
 
 plot.add_layout(strike_line)
 plot.add_layout(spot_line)
 
-# CheckboxGroup to toggle Greeks
+hover_tool1 = HoverTool(
+    tooltips=[("Value", "@y{0.0000}"), ("Spot Price", "@x{0.00}")],
+    renderers=[line_deltas, line_gammas, line_vegas, line_thetas],
+    mode='vline'
+)
+
+plot.add_tools(hover_tool1)
+
 checkbox = CheckboxGroup(labels=["Delta", "Gamma", "Vega", "Theta"], active=[0, 1, 2, 3])
 
-# CustomJS callback for interactive toggle
+
 callback = CustomJS(args=dict(deltas=line_deltas, gammas=line_gammas, vegas=line_vegas, thetas=line_thetas, checkbox=checkbox),
                     code="""
                     deltas.visible = checkbox.active.includes(0);
@@ -289,10 +298,10 @@ plot.xaxis.axis_label = "Spot"
 plot.yaxis.axis_label = "Value"
 
 plot.margin = (20, 20, 20, 20)
-# Layout Bokeh elements
+
 layout = column(checkbox, plot)
 
-# Display the plot in Streamlit
+
 st.bokeh_chart(layout, use_container_width=True)    
 
 
