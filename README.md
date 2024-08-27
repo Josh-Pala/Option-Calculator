@@ -8,11 +8,14 @@ to compute option prices and sensitivities, offering a robust platform for finan
     
 1. **Options Pricing**:
    -Calculate the prices of European call and put options using models like Black-Scholes, allowing users to determine fair market values based on various inputs.
+   
 3. **Greeks Calculation**:
    -Compute key Greeks — Delta, Gamma, Theta, Vega — to assess and manage the risk of options positions under changing market conditions.
-4. **Payoff Diagrams**:
+   
+5. **Payoff Diagrams**:
    -Visualize the profit and loss potential of different options strategies through interactive diagrams, helping traders understand potential outcomes.
-5. **Delta Hedging**:
+   
+7. **Delta Hedging**:
    -Implement delta hedging strategies to minimize risk, with visual aids such as heatmaps to illustrate effectiveness under varying market conditions.
     
 
