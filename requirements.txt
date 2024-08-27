@@ -1,4 +1,5 @@
 streamlit
+bokeh
 pandas
 numpy
 scipy
