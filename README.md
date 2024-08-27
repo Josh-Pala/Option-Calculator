@@ -8,7 +8,7 @@ to compute option prices and sensitivities, offering a robust platform for finan
     
 1. **Options Pricing**:
    
-       *Calculate the prices of European call and put options using models like Black-Scholes, allowing users to determine fair market values based on various inputs.
+       * Calculate the prices of European call and put options using models like Black-Scholes, allowing users to determine fair market values based on various inputs.
    
 3. **Greeks Calculation**:
    
