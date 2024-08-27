@@ -2,9 +2,8 @@ streamlit
 bokeh
 pandas
 numpy
-scipy
 matplotlib
 seaborn
-math
+
 
 
