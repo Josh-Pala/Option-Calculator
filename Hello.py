@@ -2,7 +2,8 @@ import streamlit as st
 
 st.set_page_config(
     page_title="Options Calculator",
-    page_icon="📟"
+    page_icon="📟",
+    layout="wide"
 )
 
 
