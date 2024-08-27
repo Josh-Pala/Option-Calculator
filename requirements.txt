@@ -4,6 +4,7 @@ pandas
 numpy
 matplotlib
 seaborn
-
+scipy
+math
 
 
