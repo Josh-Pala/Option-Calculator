@@ -2,6 +2,7 @@ import streamlit as st
 import option_functions as op 
 import pandas as pd
 import numpy as np
+import bokeh as bokeh
 from bokeh.plotting import figure
 from bokeh.models import ColumnDataSource, CheckboxGroup, Span, Label, HoverTool, CustomJS
 from bokeh.layouts import column
