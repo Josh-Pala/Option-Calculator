@@ -10,6 +10,7 @@ from bokeh.palettes import Spectral11
 st.set_page_config(
     page_title="Option Price",
     page_icon="📊",
+    layout="wide"
 )
 
 
