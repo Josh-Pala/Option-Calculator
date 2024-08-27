@@ -6,4 +6,5 @@ plotly
 matplotlib
 seaborn
 bokeh
-math
+
+
