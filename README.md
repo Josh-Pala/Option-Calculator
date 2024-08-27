@@ -1,14 +1,19 @@
 # Option-Calculator
 
- ## About the Project
+The Options Calculator is an interactive tool designed to help traders, financial analysts, and students to 
+better understand and calculate the price of options and their Greeks. This project leverages the Black-Scholes model
+to compute option prices and sensitivities, offering a robust platform for financial analysis.
     
-    The Options Calculator is an interactive tool designed to help traders, financial analysts, and students to 
-    better understand and calculate the price of options and their Greeks. This project leverages the Black-Scholes model
-    to compute option prices and sensitivities, offering a robust platform for financial analysis.
+ ## 🚀 Key Features:
     
-    Key Features:
+1. **Options Pricing**:
+   -Calculate the prices of European call and put options using models like Black-Scholes, allowing users to determine fair market values based on various inputs.
+3. **Greeks Calculation**:
+   -Compute key Greeks — Delta, Gamma, Theta, Vega — to assess and manage the risk of options positions under changing market conditions.
+4. **Payoff Diagrams**:
+   -Visualize the profit and loss potential of different options strategies through interactive diagrams, helping traders understand potential outcomes.
+5. **Delta Hedging**:
+   -Implement delta hedging strategies to minimize risk, with visual aids such as heatmaps to illustrate effectiveness under varying market conditions.
     
-    - Options Pricing: Calculate the price of European call and put options.
-    - Greeks Calculation: Explore key risk measures like Delta, Gamma, Theta, and Vega.
-    - Payoff Diagrams: Visualize the payoff structure of options.
-    - Delta Hedging: Implement and understand delta hedging strategies with visual aids like heatmaps.
+
+
