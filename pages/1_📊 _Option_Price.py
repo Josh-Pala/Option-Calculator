@@ -201,42 +201,24 @@ def plot_payoff_and_price(spot, strike, expiry, vol, rate, option_type):
 s, payoff, s_price, prices = plot_payoff_and_price(spot=spot, strike=strike, expiry=expiry, vol=vol, rate=rate, option_type=option_type)
 
 
-source_payoff = ColumnDataSource(data=dict(x=s, y=payoff))
-source_prices = ColumnDataSource(data=dict(x=s_price, y=prices))
+fig = go.Figure()
 
 
-plot = figure(width=800, height=400, title="Option Pricing and Payoff", tools="pan,wheel_zoom,box_zoom,reset")
-
-line_payoff = plot.line('x', 'y', source=source_payoff, color="blue", legend_label="Payoff", line_width=2)
-line_prices = plot.line('x', 'y', source=source_prices, color="red", legend_label="Option Price", line_width=2)
+fig.add_trace(go.Scatter(x=s, y=payoff, mode='lines', name='Payoff', line=dict(color='blue')))
 
 
-strike_line = Span(location=strike, dimension='height', line_color='green', line_dash='dotted', line_width=2)
-spot_line = Span(location=spot, dimension='height', line_color='orange', line_dash='dotted', line_width=2)
-
-plot.add_layout(strike_line)
-plot.add_layout(spot_line)
+fig.add_trace(go.Scatter(x=s_price, y=prices, mode='lines', name='Option Price', line=dict(color='red')))
 
 
+fig.add_vline(x=strike, line=dict(color='green', dash='dot'), name='Strike Price')
+fig.add_vline(x=spot, line=dict(color='orange', dash='dot'), name='Spot Price')
 
 
-hover_tool = HoverTool(
-    tooltips=[("Price Level", "@y{0.00}"), ("Spot Price", "@x{0.00}")],
-    renderers=[line_prices],
-    mode='vline'
-)
-
-plot.add_tools(hover_tool)
-
-plot.xaxis.axis_label = "Spot"
-plot.yaxis.axis_label = "Value ($)"
-
-plot.margin = (20, 20, 20, 20) #top, right, bottom, left
+fig.update_layout(title='Option Pricing and Payoff', xaxis_title='Spot Price', yaxis_title='Value ($)', width=800, height=400)
 
 
-layout = column(plot)
+st.plotly_chart(fig, use_container_width=True)
 
-st.bokeh_chart(layout, use_container_width=True)
 
 @st.cache_data
 def plot_greeks(spot, strike, expiry, vol, rate, option_type):
@@ -253,57 +235,27 @@ def plot_greeks(spot, strike, expiry, vol, rate, option_type):
 s, deltas, gammas, vegas, thetas = plot_greeks(spot=spot, strike=strike, expiry=expiry, vol=vol, rate=rate, option_type=option_type)
 
 
-source_deltas = ColumnDataSource(data=dict(x=s, y=deltas))
-source_gammas = ColumnDataSource(data=dict(x=s, y=gammas))
-source_vegas = ColumnDataSource(data=dict(x=s, y=vegas))
-source_thetas = ColumnDataSource(data=dict(x=s, y=thetas))
 
-plot = figure(width=800, height=400, title="Option Greeks", tools="pan,wheel_zoom,box_zoom,reset")
-
-line_deltas = plot.line('x', 'y', source=source_deltas, color="blue", legend_label="Delta", line_width=2)
-line_gammas = plot.line('x', 'y', source=source_gammas, color="green", legend_label="Gamma", line_width=2)
-line_vegas = plot.line('x', 'y', source=source_vegas, color="orange", legend_label="Vega", line_width=2)
-line_thetas = plot.line('x', 'y', source=source_thetas, color="red", legend_label="Theta", line_width=2)
+fig_greeks = go.Figure()
 
 
-strike_line = Span(location=strike, dimension='height', line_color='green', line_dash='dotted', line_width=2)
-spot_line = Span(location=spot, dimension='height', line_color='orange', line_dash='dotted', line_width=2)
-
-plot.add_layout(strike_line)
-plot.add_layout(spot_line)
-
-hover_tool1 = HoverTool(
-    tooltips=[("Value", "@y{0.0000}"), ("Spot Price", "@x{0.00}")],
-    renderers=[line_deltas, line_gammas, line_vegas, line_thetas],
-    mode='vline'
-)
-
-plot.add_tools(hover_tool1)
-
-checkbox = CheckboxGroup(labels=["Delta", "Gamma", "Vega", "Theta"], active=[0, 1, 2, 3])
+fig_greeks.add_trace(go.Scatter(x=s, y=deltas, mode='lines', name='Delta', line=dict(color='blue')))
+fig_greeks.add_trace(go.Scatter(x=s, y=gammas, mode='lines', name='Gamma', line=dict(color='green')))
+fig_greeks.add_trace(go.Scatter(x=s, y=vegas, mode='lines', name='Vega', line=dict(color='orange')))
+fig_greeks.add_trace(go.Scatter(x=s, y=thetas, mode='lines', name='Theta', line=dict(color='red')))
 
 
-callback = CustomJS(args=dict(deltas=line_deltas, gammas=line_gammas, vegas=line_vegas, thetas=line_thetas, checkbox=checkbox),
-                    code="""
-                    deltas.visible = checkbox.active.includes(0);
-                    gammas.visible = checkbox.active.includes(1);
-                    vegas.visible = checkbox.active.includes(2);
-                    thetas.visible = checkbox.active.includes(3);
-                    """
-                   )
-
-checkbox.js_on_change('active', callback)
+fig_greeks.add_vline(x=strike, line=dict(color='green', dash='dot'), name='Strike Price')
+fig_greeks.add_vline(x=spot, line=dict(color='orange', dash='dot'), name='Spot Price')
 
 
-plot.xaxis.axis_label = "Spot"
-plot.yaxis.axis_label = "Value"
-
-plot.margin = (20, 20, 20, 20)
-
-layout = column(checkbox, plot)
+fig_greeks.update_layout(title='Option Greeks', xaxis_title='Spot Price', yaxis_title='Value', width=800, height=400)
 
 
-st.bokeh_chart(layout, use_container_width=True)    
+st.plotly_chart(fig_greeks, use_container_width=True)  
+
+
+
 
 
 
