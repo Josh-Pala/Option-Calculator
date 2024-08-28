@@ -2,10 +2,7 @@ import streamlit as st
 import option_functions as op 
 import pandas as pd
 import numpy as np
-from bokeh.plotting import figure
-from bokeh.models import ColumnDataSource, CheckboxGroup, Span, Label, HoverTool, CustomJS
-from bokeh.layouts import column
-from bokeh.palettes import Spectral11
+import plotly.graph_objects as go 
 
 st.set_page_config(
     page_title="Option Price",
