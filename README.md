@@ -3,6 +3,8 @@
 The Options Calculator is an interactive tool designed to help traders, financial analysts, and students to 
 better understand and calculate the price of options and their Greeks. This project leverages the Black-Scholes model
 to compute option prices and sensitivities, offering a robust platform for financial analysis.
+
+### Click on this link to see the app: https://option-calculator.streamlit.app/Option_Price
     
  ## 🚀 Key Features:
     
