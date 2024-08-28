@@ -201,10 +201,10 @@ s, payoff, s_price, prices = plot_payoff_and_price(spot=spot, strike=strike, exp
 fig = go.Figure()
 
 
-fig.add_trace(go.Scatter(x=s, y=payoff, mode='lines', name='Payoff', line=dict(color='blue')))
+fig.add_trace(go.Scatter(x=s, y=payoff, mode='lines', name='Payoff', line=dict(color='rgba(39, 146, 245, 1)')))
 
 
-fig.add_trace(go.Scatter(x=s_price, y=prices, mode='lines', name='Option Price', line=dict(color='red')))
+fig.add_trace(go.Scatter(x=s_price, y=prices, mode='lines', name='Option Price', line=dict(color='rgba(245, 39, 52, 1)')))
 
 
 fig.add_vline(x=strike, line=dict(color='green', dash='dot'), name='Strike Price')
@@ -236,10 +236,10 @@ s, deltas, gammas, vegas, thetas = plot_greeks(spot=spot, strike=strike, expiry=
 fig_greeks = go.Figure()
 
 
-fig_greeks.add_trace(go.Scatter(x=s, y=deltas, mode='lines', name='Delta', line=dict(color='blue')))
+fig_greeks.add_trace(go.Scatter(x=s, y=deltas, mode='lines', name='Delta', line=dict(color='rgba(39, 146, 245, 1)')))
 fig_greeks.add_trace(go.Scatter(x=s, y=gammas, mode='lines', name='Gamma', line=dict(color='green')))
 fig_greeks.add_trace(go.Scatter(x=s, y=vegas, mode='lines', name='Vega', line=dict(color='orange')))
-fig_greeks.add_trace(go.Scatter(x=s, y=thetas, mode='lines', name='Theta', line=dict(color='red')))
+fig_greeks.add_trace(go.Scatter(x=s, y=thetas, mode='lines', name='Theta', line=dict(color='rgba(245, 39, 52, 1)')))
 
 
 fig_greeks.add_vline(x=strike, line=dict(color='green', dash='dot'), name='Strike Price')
